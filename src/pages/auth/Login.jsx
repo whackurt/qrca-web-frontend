@@ -1,11 +1,31 @@
 import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserLogin } from '../../services/auth/auth';
 
 const Login = () => {
 	const navigate = useNavigate();
 
-	const login = () => {
-		navigate('/');
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [errorMsg, setErrorMsg] = useState('');
+	const [loginError, setLoginError] = useState(false);
+
+	const login = async () => {
+		await UserLogin({ username: username, password: password }).then((res) => {
+			if (res.data && res.data.hasOwnProperty('token')) {
+				setLoginError(false);
+				setErrorMsg('');
+
+				localStorage.setItem('user_id', res.data.id);
+				localStorage.setItem('token', res.data.token);
+
+				navigate('/');
+			} else {
+				setLoginError(true);
+				setErrorMsg(res.response.data.message);
+			}
+		});
 	};
 
 	return (
@@ -30,15 +50,23 @@ const Login = () => {
 					<form action="">
 						<div className="flex flex-col py-2">
 							<p className="font-bold">Username</p>
-							<input className="rounded border-slate-300" type="text" />
+							<input
+								onChange={(e) => setUsername(e.target.value)}
+								className="rounded border-slate-300"
+								type="text"
+							/>
 						</div>
 						<div className="flex flex-col py-2">
 							<p className="font-bold">Password</p>
-							<input className="rounded border-slate-300" type="text" />
+							<input
+								onChange={(e) => setPassword(e.target.value)}
+								className="rounded border-slate-300"
+								type="password"
+							/>
 						</div>
 						<div className="flex flex-col py-2">
 							<p className="text-xs text-red-600 text-center">
-								Invalid Credentials.
+								{loginError ? errorMsg : null}
 							</p>
 						</div>
 					</form>

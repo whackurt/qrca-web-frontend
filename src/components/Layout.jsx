@@ -3,7 +3,7 @@ import Control from '../assets/control.png';
 import { MdOutlineDashboard, MdOutlinePets } from 'react-icons/md';
 import { BsQrCodeScan, BsFileSpreadsheet, BsPeople } from 'react-icons/bs';
 import Button from '../components/Button';
-import Logo from '../assets/attendance-icon-design-free-vector.jpg';
+import Logo from '../assets/pnp.png';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -43,7 +43,10 @@ const Layout = ({ children, location }) => {
 					onClick={() => setOpen(!open)}
 				/>
 
-				<div className="flex gap-x-4 items-center">
+				<div
+					onClick={() => navigate('/')}
+					className="flex gap-x-4 items-center"
+				>
 					<img
 						width={50}
 						src={Logo}

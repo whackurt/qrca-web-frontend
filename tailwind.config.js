@@ -10,8 +10,8 @@ module.exports = {
 				roboto: ['Roboto', 'sans-serif'],
 			},
 			colors: {
-				primary: '#eb696a',
-				secondary: '#db4b44',
+				primary: '#db4b44',
+				secondary: '#eb696a',
 			},
 			backgroundImage: {
 				police:

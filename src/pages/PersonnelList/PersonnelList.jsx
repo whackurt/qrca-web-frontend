@@ -4,6 +4,13 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { IoMdSearch } from 'react-icons/io';
 import Button from '../../components/Button';
 import { useState } from 'react';
+import {
+	CreatePersonnel,
+	DeletePersonnelById,
+	GetPersonnel,
+	UpdatePersonnelById,
+} from '../../services/personnel';
+import { useEffect } from 'react';
 
 const PersonnelList = () => {
 	const [showModal, setShowModal] = useState(false);
@@ -18,10 +25,66 @@ const PersonnelList = () => {
 	const [personnel, setPersonnel] = useState([]);
 	const [personnelDetails, setPersonnelDetails] = useState({});
 	const [newPersonnel, setNewPersonnel] = useState({});
+	const [filteredPersonnel, setFilteredPersonnel] = useState([]);
+	const [searchValue, setSearchValue] = useState('');
 
-	const saveUpdate = async () => {};
-	const deletePersonnel = async () => {};
-	const addPersonnel = async () => {};
+	const saveUpdate = async () => {
+		setLoading(true);
+
+		const res = await UpdatePersonnelById(idToEdit, updates);
+
+		console.log(res);
+
+		if (res.status === 200) {
+			getPersonnel();
+
+			setIdToEdit(null);
+
+			toggleModal();
+		}
+
+		setLoading(false);
+	};
+
+	const deletePersonnel = async () => {
+		setLoading(true);
+
+		const res = await DeletePersonnelById(idToDelete);
+
+		if (res.status === 200) {
+			getPersonnel();
+			toggleDeleteModal();
+		}
+
+		setLoading(false);
+	};
+
+	const addPersonnel = async () => {
+		setLoading(true);
+
+		const res = await CreatePersonnel(newPersonnel);
+
+		if (res.status === 201) {
+			getPersonnel();
+			toggleAddModal();
+		}
+
+		setLoading(false);
+	};
+
+	const getPersonnel = async () => {
+		const res = await GetPersonnel();
+		setPersonnel(res.data);
+		setFilteredPersonnel(res.data);
+	};
+
+	const searchPersonnel = () => {
+		setFilteredPersonnel(
+			personnel.filter(
+				(p) => p.last_name.toLowerCase() === searchValue.toLowerCase()
+			)
+		);
+	};
 
 	const toggleModal = () => {
 		setShowModal(!showModal);
@@ -35,6 +98,15 @@ const PersonnelList = () => {
 		setShowAddModal(!showAddModal);
 	};
 
+	useEffect(() => {
+		getPersonnel();
+	}, []);
+
+	useEffect(() => {
+		setFilteredPersonnel([]);
+		searchPersonnel();
+	}, [searchValue]);
+
 	return (
 		<div>
 			<div className="flex justify-between items-center">
@@ -47,11 +119,11 @@ const PersonnelList = () => {
 							>
 								&times;
 							</span>
-							<h2 className="text-lg font-bold mb-4">
+							<h2 className="text-center text-lg font-bold mb-4">
 								Update Personnel Information
 							</h2>
 
-							<form>
+							<div>
 								<div className="mb-4">
 									<label
 										htmlFor="name"
@@ -63,8 +135,7 @@ const PersonnelList = () => {
 										type="text"
 										id="position"
 										name="position"
-										value={'PQCAQCUAUK'}
-										placeholder={personnelDetails[0]?.qr_code}
+										value={`${personnelDetails?.qr_code}`}
 										disabled
 										className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
 									/>
@@ -80,7 +151,7 @@ const PersonnelList = () => {
 										type="text"
 										id="position"
 										name="position"
-										placeholder={personnelDetails[0]?.position}
+										placeholder={personnelDetails?.position}
 										onChange={(e) =>
 											setUpdates({
 												...updates,
@@ -101,7 +172,7 @@ const PersonnelList = () => {
 										type="text"
 										id="first_name"
 										name="first_name"
-										placeholder={personnelDetails[0]?.first_name}
+										placeholder={personnelDetails?.first_name}
 										onChange={(e) =>
 											setUpdates({
 												...updates,
@@ -122,7 +193,7 @@ const PersonnelList = () => {
 										type="text"
 										id="last_name"
 										name="last_name"
-										placeholder={personnelDetails[0]?.last_name}
+										placeholder={personnelDetails?.last_name}
 										onChange={(e) =>
 											setUpdates({
 												...updates,
@@ -140,7 +211,7 @@ const PersonnelList = () => {
 								>
 									{loading ? 'Saving...' : 'Save Changes'}
 								</button>
-							</form>
+							</div>
 						</div>
 					</div>
 				)}
@@ -168,7 +239,7 @@ const PersonnelList = () => {
 										type="text"
 										id="position"
 										name="position"
-										placeholder={personnelDetails[0]?.position}
+										placeholder={personnelDetails?.position}
 										onChange={(e) =>
 											setNewPersonnel({
 												...newPersonnel,
@@ -189,7 +260,7 @@ const PersonnelList = () => {
 										type="text"
 										id="first_name"
 										name="first_name"
-										placeholder={personnelDetails[0]?.first_name}
+										placeholder={personnelDetails?.first_name}
 										onChange={(e) =>
 											setNewPersonnel({
 												...newPersonnel,
@@ -210,7 +281,7 @@ const PersonnelList = () => {
 										type="text"
 										id="last_name"
 										name="last_name"
-										placeholder={personnelDetails[0]?.last_name}
+										placeholder={personnelDetails?.last_name}
 										onChange={(e) =>
 											setNewPersonnel({
 												...newPersonnel,
@@ -265,9 +336,13 @@ const PersonnelList = () => {
 					<input
 						className="relative h-8 rounded-lg w-64"
 						type="text"
-						placeholder="Enter personnel name"
+						onChange={(e) => setSearchValue(e.target.value)}
+						placeholder="Search by last name"
 					/>
-					<button className="absolute px-2 bg-secondary hover:bg-primary py-2 rounded-lg">
+					<button
+						onClick={() => searchPersonnel()}
+						className="absolute px-2 bg-secondary hover:bg-primary py-2 rounded-lg"
+					>
 						<IoMdSearch color="#FFFFFF" />
 					</button>
 				</div>
@@ -296,29 +371,82 @@ const PersonnelList = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<tr className="bg-white border-b">
-						<th
-							scope="row"
-							className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-						>
-							PQCAQCUAUK
-						</th>
-						<td className="px-6 py-4">P/SSgt.</td>
-						<td className="px-6 py-4">Bagtac</td>
-						<td className="px-6 py-4">Jovy</td>
-						<td className="px-6 py-4">
-							<div className="flex gap-x-2">
-								<button onClick={() => toggleModal()}>
-									<FiEdit size={20} color="#048a0d" />
-								</button>
-								<button onClick={() => toggleDeleteModal()}>
-									<RiDeleteBin6Line size={20} color="#ab0725" />
-								</button>
-							</div>
-						</td>
-					</tr>
+					{searchValue === ''
+						? personnel?.map((p) => (
+								<tr key={p._id} className="bg-white border-b">
+									<th
+										scope="row"
+										className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+									>
+										{p.qr_code}
+									</th>
+									<td className="px-6 py-4">{p.position}</td>
+									<td className="px-6 py-4">{p.last_name}</td>
+									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">
+										<div className="flex gap-x-2">
+											<button
+												onClick={() => {
+													setIdToEdit(`${p._id}`);
+													setPersonnelDetails(p);
+													toggleModal();
+												}}
+											>
+												<FiEdit size={20} color="#048a0d" />
+											</button>
+											<button
+												onClick={() => {
+													setIdToDelete(p._id);
+													toggleDeleteModal();
+												}}
+											>
+												<RiDeleteBin6Line size={20} color="#ab0725" />
+											</button>
+										</div>
+									</td>
+								</tr>
+						  ))
+						: filteredPersonnel?.map((p) => (
+								<tr key={p._id} className="bg-white border-b">
+									<th
+										scope="row"
+										className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+									>
+										{p.qr_code}
+									</th>
+									<td className="px-6 py-4">{p.position}</td>
+									<td className="px-6 py-4">{p.last_name}</td>
+									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">
+										<div className="flex gap-x-2">
+											<button
+												onClick={() => {
+													setIdToEdit(`${p._id}`);
+													setPersonnelDetails(p);
+													toggleModal();
+												}}
+											>
+												<FiEdit size={20} color="#048a0d" />
+											</button>
+											<button
+												onClick={() => {
+													setIdToDelete(p._id);
+													toggleDeleteModal();
+												}}
+											>
+												<RiDeleteBin6Line size={20} color="#ab0725" />
+											</button>
+										</div>
+									</td>
+								</tr>
+						  ))}
 				</tbody>
 			</table>
+			{personnel.length === 0 ? (
+				<div className="flex justify-center py-4 pl-2">
+					No personnel data available
+				</div>
+			) : null}
 		</div>
 	);
 };

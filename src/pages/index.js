@@ -1,6 +1,6 @@
-import Dashboard from './Dashboard/Dashboard';
-import Login from './Auth/Login';
-import ScanQRCode from './ScanAttendance.jsx/ScanQRCode';
-import PersonnelList from './PersonnelList/PersonnelList';
+import Dashboard from './Dashboard/Dashboard.jsx';
+import Login from './Auth/Login.jsx';
+import ScanQRCode from './ScanAttendance/ScanQRCode.jsx';
+import PersonnelList from './PersonnelList/PersonnelList.jsx';
 
 export { Login, Dashboard, ScanQRCode, PersonnelList };

@@ -9,11 +9,12 @@ const Dashboard = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [attendance, setAttendance] = useState([]);
 	const [filteredAttendance, setFilteredAttendance] = useState([]);
-	const [filterDate, setFilterDate] = useState('');
 
 	const getAttendance = async () => {
 		const res = await GetAttendance();
+
 		setAttendance(res.data);
+
 		setFilteredAttendance(
 			res.data.filter(
 				(attendance) =>
@@ -21,27 +22,12 @@ const Dashboard = () => {
 					selectedDate.toISOString().substring(0, 10)
 			)
 		);
-		console.log(res.data);
 	};
-
-	const currentDate = new Date();
-	const monthsOfYear = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	];
 
 	const formatDate = (dateTime) => {
 		const dt = new Date(dateTime);
+		dt.setHours(dt.getHours() - 8);
+
 		return format(dt, 'MMMM d, yyyy');
 	};
 
@@ -55,18 +41,20 @@ const Dashboard = () => {
 				at.dateTime.substring(0, 10) ===
 				selectedDate.toISOString().substring(0, 10)
 		);
+
 		setFilteredAttendance(filtered);
-		console.log(selectedDate.toISOString().substring(0, 10));
 	}, [selectedDate]);
 
 	return (
 		<div className="relative overflow-x-auto h-screen">
 			<div className="flex justify-between">
-				<div className="flex flex-col">
-					<h1 className="font-bold text-2xl text-slate-600 uppercase">
-						Attendance
-					</h1>
-					{filterDate}
+				<div className="flex ">
+					<h1 className=" text-2xl text-slate-600 uppercase">Attendance | </h1>
+					<h1 className="ml-1 font-bold text-2xl text-secondary ">
+						{formatDate(selectedDate)}
+					</h1>{' '}
+				</div>
+				<div>
 					<div className="flex gap-x-2 mt-2 items-center pl-2 rounded-lg bg-primary text-white">
 						<p className="text-xs">Filter by date</p>
 						<DatePicker
@@ -79,11 +67,6 @@ const Dashboard = () => {
 						/>
 					</div>
 				</div>
-				<h1 className="font-bold text-2xl text-slate-600 ">
-					{`${
-						monthsOfYear[currentDate.getMonth()]
-					} ${currentDate.getDate()}, ${currentDate.getFullYear()} `}
-				</h1>
 			</div>
 			<table className="w-full my-4 text-sm border  rounded-md text-left rtl:text-right text-gray-600">
 				<thead className="text-xs text-white uppercase bg-primary">
@@ -126,6 +109,11 @@ const Dashboard = () => {
 					))}
 				</tbody>
 			</table>
+			{filteredAttendance.length === 0 ? (
+				<div className="flex justify-center py-4 pl-2">
+					No attendance data available
+				</div>
+			) : null}
 		</div>
 	);
 };

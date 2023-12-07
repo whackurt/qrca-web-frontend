@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserLogin } from '../../services/auth/auth';
+import { UserLogin } from '../../services/auth';
 import { ClipLoader } from 'react-spinners';
 
 const Login = () => {

@@ -2,14 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { IoMdSearch } from 'react-icons/io';
 import { AiOutlineScan } from 'react-icons/ai';
 import QRCode from 'react-qr-code';
+import { GetPersonnel } from '../../services/personnel';
 
 const ScanQRCode = () => {
 	const [qrcode, setQrcode] = useState('');
 	const [showModal, setShowModal] = useState(false);
+	const [personnel, setPersonnel] = useState([]);
+	const [filteredPersonnel, setFilteredPersonnel] = useState([]);
+	const [searchValue, setSearchValue] = useState('');
 
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
+
+	const getPersonnel = async () => {
+		const res = await GetPersonnel();
+		setPersonnel(res.data);
+		setFilteredPersonnel(res.data);
+	};
+
+	useEffect(() => {
+		getPersonnel();
+	}, []);
+
+	const searchPersonnel = () => {
+		setFilteredPersonnel(
+			personnel.filter(
+				(p) => p.last_name.toLowerCase() === searchValue.toLowerCase()
+			)
+		);
+	};
+
+	useEffect(() => {
+		setFilteredPersonnel([]);
+		searchPersonnel();
+	}, [searchValue]);
 
 	return (
 		<div className="relative overflow-x-auto">
@@ -43,9 +70,13 @@ const ScanQRCode = () => {
 					<input
 						className="relative h-8 rounded-lg w-64"
 						type="text"
-						placeholder="Enter personnel name"
+						onChange={(e) => setSearchValue(e.target.value)}
+						placeholder="Search by last name"
 					/>
-					<button className="absolute px-2 bg-secondary hover:bg-primary py-2 rounded-lg">
+					<button
+						onClick={() => searchPersonnel()}
+						className="absolute px-2 bg-secondary hover:bg-primary py-2 rounded-lg"
+					>
 						<IoMdSearch color="#FFFFFF" />
 					</button>
 				</div>
@@ -72,50 +103,60 @@ const ScanQRCode = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<tr className="bg-white border-b">
-						<th
-							scope="row"
-							className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap"
-						>
-							PQCAWALYTC
-						</th>
-						<td className="px-6 py-4">P/SSgt.</td>
-						<td className="px-6 py-4">P/Bagtac.</td>
-						<td className="px-6 py-4">Jovy</td>
-						<td className="px-6 py-4">
-							<button
-								onClick={() => {
-									setQrcode('PQCAWALYTC');
-									toggleModal();
-								}}
-							>
-								<AiOutlineScan size={25} color="#eb696a" />
-							</button>
-						</td>
-					</tr>
-					<tr className="bg-white border-b">
-						<th
-							scope="row"
-							className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap"
-						>
-							PQCAMYQC9E
-						</th>
-						<td className="px-6 py-4">P/SSgt.</td>
-						<td className="px-6 py-4">P/Bagtac.</td>
-						<td className="px-6 py-4">Jovy</td>
-						<td className="px-6 py-4">
-							<button
-								onClick={() => {
-									setQrcode('PQCAMYQC9E');
-									toggleModal();
-								}}
-							>
-								<AiOutlineScan size={25} color="#eb696a" />
-							</button>
-						</td>
-					</tr>
+					{searchValue === ''
+						? personnel?.map((p) => (
+								<tr className="bg-white border-b">
+									<th
+										scope="row"
+										className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap"
+									>
+										{p.qr_code}
+									</th>
+									<td className="px-6 py-4">{p.position}</td>
+									<td className="px-6 py-4">{p.last_name}</td>
+									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">
+										<button
+											onClick={() => {
+												setQrcode(`${p.qr_code}`);
+												toggleModal();
+											}}
+										>
+											<AiOutlineScan size={25} color="#eb696a" />
+										</button>
+									</td>
+								</tr>
+						  ))
+						: filteredPersonnel?.map((p) => (
+								<tr className="bg-white border-b">
+									<th
+										scope="row"
+										className="px-6 py-4 font-medium text-blue-900 whitespace-nowrap"
+									>
+										{p.qr_code}
+									</th>
+									<td className="px-6 py-4">{p.position}</td>
+									<td className="px-6 py-4">{p.last_name}</td>
+									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">
+										<button
+											onClick={() => {
+												setQrcode(`${p.qr_code}`);
+												toggleModal();
+											}}
+										>
+											<AiOutlineScan size={25} color="#eb696a" />
+										</button>
+									</td>
+								</tr>
+						  ))}
 				</tbody>
 			</table>
+			{personnel.length === 0 ? (
+				<div className="flex justify-center py-4 pl-2">
+					No personnel data available
+				</div>
+			) : null}
 		</div>
 	);
 };

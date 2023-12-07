@@ -1,6 +1,6 @@
 import './App.css';
 import Dashboard from './pages/Dashboard/Dashboard';
-import Login from './pages/Auth/Login';
+import Login from './pages/Auth/AdminLogin';
 import PersonnelList from './pages/PersonnelList/PersonnelList';
 import ScanQRCode from './pages/ScanAttendance/ScanQRCode';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';

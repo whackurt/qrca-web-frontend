@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserLogin } from '../../services/auth';
 import { ClipLoader } from 'react-spinners';
 
-const Login = () => {
+const AdminLogin = () => {
 	const navigate = useNavigate();
 
 	const [username, setUsername] = useState('');
@@ -97,4 +97,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default AdminLogin;

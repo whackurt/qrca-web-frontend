@@ -1,5 +1,8 @@
 import './App.css';
-import { Dashboard, Login, PersonnelList, ScanQRCode } from './pages';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Login from './pages/Auth/Login';
+import PersonnelList from './pages/PersonnelList/PersonnelList';
+import ScanQRCode from './pages/ScanAttendance/ScanQRCode';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';

@@ -33,8 +33,6 @@ const PersonnelList = () => {
 
 		const res = await UpdatePersonnelById(idToEdit, updates);
 
-		console.log(res);
-
 		if (res.status === 200) {
 			getPersonnel();
 
@@ -43,6 +41,7 @@ const PersonnelList = () => {
 			toggleModal();
 		}
 
+		setUpdates({});
 		setLoading(false);
 	};
 

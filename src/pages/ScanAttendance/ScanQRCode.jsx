@@ -26,11 +26,14 @@ const ScanQRCode = () => {
 	}, []);
 
 	const searchPersonnel = () => {
-		setFilteredPersonnel(
-			personnel.filter(
-				(p) => p.last_name.toLowerCase() === searchValue.toLowerCase()
-			)
+		const filtered = personnel.filter(
+			(p) =>
+				p.last_name.toLowerCase().includes(searchValue.toLowerCase()) ||
+				p.first_name.toLowerCase().includes(searchValue.toLowerCase()) ||
+				p.qr_code.toLowerCase().includes(searchValue.toLowerCase())
 		);
+
+		setFilteredPersonnel(filtered);
 	};
 
 	useEffect(() => {

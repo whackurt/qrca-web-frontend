@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import AuthenticatedPrivateRoute from './components/AuthenticatedPrivateRoute';
+import SignUp from './pages/Auth/SignUp';
 
 const App = () => {
 	return (
@@ -18,6 +19,14 @@ const App = () => {
 						element={
 							<AuthenticatedPrivateRoute>
 								<Login />
+							</AuthenticatedPrivateRoute>
+						}
+					/>
+					<Route
+						path="/signup"
+						element={
+							<AuthenticatedPrivateRoute>
+								<SignUp />
 							</AuthenticatedPrivateRoute>
 						}
 					/>

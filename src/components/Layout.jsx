@@ -17,11 +17,7 @@ const Layout = ({ children, location }) => {
 			icon: <MdOutlineDashboard size={25} color="#585959" />,
 			route: '/',
 		},
-		{
-			title: 'Scan QR Code',
-			icon: <BsQrCodeScan size={25} color="#585959" />,
-			route: '/scan-qr-code',
-		},
+
 		{
 			title: 'Personnel List',
 			icon: <BsPeople size={25} color="#585959" />,

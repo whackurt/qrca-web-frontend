@@ -74,7 +74,7 @@ const ScanQRCode = () => {
 						className="relative h-8 rounded-lg w-64"
 						type="text"
 						onChange={(e) => setSearchValue(e.target.value)}
-						placeholder="Search by last name"
+						placeholder="Search personnel"
 					/>
 					<button
 						onClick={() => searchPersonnel()}

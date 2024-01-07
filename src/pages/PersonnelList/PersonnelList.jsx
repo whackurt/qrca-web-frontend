@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { IoMdSearch } from 'react-icons/io';
@@ -11,11 +11,14 @@ import {
 	UpdatePersonnelById,
 } from '../../services/personnel';
 import { useEffect } from 'react';
+import { AiOutlineScan } from 'react-icons/ai';
+import QRCode from 'qrcode.react';
 
 const PersonnelList = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showAddModal, setShowAddModal] = useState(false);
+	const [showQRModal, setShowQRModal] = useState(false);
 
 	const [loading, setLoading] = useState(false);
 	const [idToEdit, setIdToEdit] = useState(null);
@@ -27,6 +30,26 @@ const PersonnelList = () => {
 	const [newPersonnel, setNewPersonnel] = useState({});
 	const [filteredPersonnel, setFilteredPersonnel] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
+
+	const [qrcode, setQrcode] = useState('');
+
+	// const canvasRef = useRef(null);
+
+	const downloadQRCode = () => {
+		const canvas = document.getElementById('qr-gen');
+		if (canvas) {
+			const pngUrl = canvas
+				.toDataURL('image/png')
+				.replace('image/png', 'image/octet-stream');
+
+			let downloadLink = document.createElement('a');
+			downloadLink.href = pngUrl;
+			downloadLink.download = `${qrcode}.png`; // Set the download file name
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+		}
+	};
 
 	const saveUpdate = async () => {
 		setLoading(true);
@@ -100,6 +123,10 @@ const PersonnelList = () => {
 		setShowAddModal(!showAddModal);
 	};
 
+	const toggleQrModal = () => {
+		setShowQRModal(!showQRModal);
+	};
+
 	useEffect(() => {
 		getPersonnel();
 	}, []);
@@ -112,6 +139,36 @@ const PersonnelList = () => {
 	return (
 		<div>
 			<div className="flex justify-between items-center">
+				{showQRModal && (
+					<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
+						<div className="absolute bg-white w-64 p-6 rounded shadow-lg">
+							<span
+								onClick={toggleQrModal}
+								className="cursor-pointer text-2xl absolute top-0 right-0 p-4"
+							>
+								&times;
+							</span>
+							<h2 className="font-bold text-center">Scan QR Code</h2>
+							<div>
+								<div className="flex flex-col items-center py-4">
+									<QRCode
+										id="qr-gen"
+										size={200}
+										includeMargin={true}
+										value={qrcode}
+									/>
+
+									<button
+										onClick={() => downloadQRCode()}
+										className="flex justify-center w-full mt-4 rounded-md py-1 bg-red-500 text-white text-sm"
+									>
+										Download
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
 				{showModal && (
 					<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
 						<div className="absolute bg-white w-2/3 md:w-1/2 lg:w-1/3 p-6 rounded shadow-lg">
@@ -339,7 +396,7 @@ const PersonnelList = () => {
 						className="relative h-8 rounded-lg w-64"
 						type="text"
 						onChange={(e) => setSearchValue(e.target.value)}
-						placeholder="Search by last name"
+						placeholder="Search personnel"
 					/>
 					<button
 						onClick={() => searchPersonnel()}
@@ -356,9 +413,6 @@ const PersonnelList = () => {
 				<thead className="text-xs text-white uppercase bg-primary">
 					<tr>
 						<th scope="col" className="px-6 py-3">
-							QR Code
-						</th>
-						<th scope="col" className="px-6 py-3">
 							Position
 						</th>
 						<th scope="col" className="px-6 py-3">
@@ -370,18 +424,15 @@ const PersonnelList = () => {
 						<th scope="col" className="px-6 py-3">
 							Actions
 						</th>
+						<th scope="col" className="px-6 py-3">
+							QR Code
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{searchValue === ''
 						? personnel?.map((p) => (
 								<tr key={p._id} className="bg-white border-b">
-									<th
-										scope="row"
-										className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-									>
-										{p.qr_code}
-									</th>
 									<td className="px-6 py-4">{p.position}</td>
 									<td className="px-6 py-4">{p.last_name}</td>
 									<td className="px-6 py-4">{p.first_name}</td>
@@ -406,16 +457,20 @@ const PersonnelList = () => {
 											</button>
 										</div>
 									</td>
+									<td className="px-6 py-4">
+										<button
+											onClick={() => {
+												setQrcode(`${p.qr_code}`);
+												toggleQrModal();
+											}}
+										>
+											<AiOutlineScan size={25} color="#eb696a" />
+										</button>
+									</td>
 								</tr>
 						  ))
 						: filteredPersonnel?.map((p) => (
 								<tr key={p._id} className="bg-white border-b">
-									<th
-										scope="row"
-										className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-									>
-										{p.qr_code}
-									</th>
 									<td className="px-6 py-4">{p.position}</td>
 									<td className="px-6 py-4">{p.last_name}</td>
 									<td className="px-6 py-4">{p.first_name}</td>
@@ -439,6 +494,16 @@ const PersonnelList = () => {
 												<RiDeleteBin6Line size={20} color="#ab0725" />
 											</button>
 										</div>
+									</td>
+									<td className="px-6 py-4">
+										<button
+											onClick={() => {
+												setQrcode(`${p.qr_code}`);
+												toggleQrModal();
+											}}
+										>
+											<AiOutlineScan size={25} color="#eb696a" />
+										</button>
 									</td>
 								</tr>
 						  ))}

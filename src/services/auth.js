@@ -8,3 +8,12 @@ export const UserLogin = async (creds) => {
 		return error;
 	}
 };
+
+export const UserSignup = async (creds) => {
+	try {
+		const res = await api.post('/auth/signup', creds);
+		return res;
+	} catch (error) {
+		return error;
+	}
+};

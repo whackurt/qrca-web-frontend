@@ -26,7 +26,7 @@ const Dashboard = () => {
 
 	const formatDate = (dateTime) => {
 		const dt = new Date(dateTime);
-		dt.setHours(dt.getHours() - 8);
+		dt.setHours(dt.getHours());
 
 		return format(dt, 'MMMM d, yyyy');
 	};

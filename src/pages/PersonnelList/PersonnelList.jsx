@@ -390,10 +390,8 @@ const PersonnelList = () => {
 					</div>
 				)}
 				<div className="flex pt-4 justify-end gap-x-2 items-center">
-					<p>Search</p>
-
 					<input
-						className="relative h-8 rounded-lg w-64"
+						className="relative h-8 rounded-lg w-64 text-xs"
 						type="text"
 						onChange={(e) => setSearchValue(e.target.value)}
 						placeholder="Search personnel"
@@ -422,10 +420,10 @@ const PersonnelList = () => {
 							First Name
 						</th>
 						<th scope="col" className="px-6 py-3">
-							Actions
+							QR Code
 						</th>
 						<th scope="col" className="px-6 py-3">
-							QR Code
+							Actions
 						</th>
 					</tr>
 				</thead>
@@ -436,6 +434,16 @@ const PersonnelList = () => {
 									<td className="px-6 py-4">{p.position}</td>
 									<td className="px-6 py-4">{p.last_name}</td>
 									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">
+										<button
+											onClick={() => {
+												setQrcode(`${p.qr_code}`);
+												toggleQrModal();
+											}}
+										>
+											<AiOutlineScan size={25} color="#eb696a" />
+										</button>
+									</td>
 									<td className="px-6 py-4">
 										<div className="flex gap-x-2">
 											<button
@@ -456,16 +464,6 @@ const PersonnelList = () => {
 												<RiDeleteBin6Line size={20} color="#ab0725" />
 											</button>
 										</div>
-									</td>
-									<td className="px-6 py-4">
-										<button
-											onClick={() => {
-												setQrcode(`${p.qr_code}`);
-												toggleQrModal();
-											}}
-										>
-											<AiOutlineScan size={25} color="#eb696a" />
-										</button>
 									</td>
 								</tr>
 						  ))

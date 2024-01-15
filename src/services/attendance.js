@@ -5,6 +5,7 @@ export const GetAttendance = async () => {
 		const res = await api.get('/attendance', {
 			headers: { 'auth-token': localStorage.getItem('token') },
 		});
+
 		return res;
 	} catch (error) {
 		return { error: error.message };
@@ -16,6 +17,7 @@ export const GetAttendanceByDate = async (date) => {
 		const res = await api.get('/attendance', date, {
 			headers: { 'auth-token': localStorage.getItem('token') },
 		});
+
 		return res;
 	} catch (error) {
 		return { error: error.message };

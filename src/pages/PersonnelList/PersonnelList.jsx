@@ -13,6 +13,9 @@ import {
 import { useEffect } from 'react';
 import { AiOutlineScan } from 'react-icons/ai';
 import QRCode from 'qrcode.react';
+import { GetStatus } from '../../services/status';
+import QRCADropdown from '../../components/Dropdown';
+// import Dropdown from '../../components/Dropdown';
 
 const PersonnelList = () => {
 	const [showModal, setShowModal] = useState(false);
@@ -30,6 +33,8 @@ const PersonnelList = () => {
 	const [newPersonnel, setNewPersonnel] = useState({});
 	const [filteredPersonnel, setFilteredPersonnel] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
+
+	const [status, setStatus] = useState([]);
 
 	const [qrcode, setQrcode] = useState('');
 
@@ -100,6 +105,23 @@ const PersonnelList = () => {
 		setFilteredPersonnel(res.data);
 	};
 
+	const getStatus = async () => {
+		const res = await GetStatus();
+
+		if (res.status === 200) {
+			const statuses = res.data;
+
+			var restructured = statuses.map((status) => {
+				return {
+					label: status.status,
+					value: status._id,
+				};
+			});
+
+			setStatus(restructured);
+		}
+	};
+
 	const searchPersonnel = () => {
 		const filtered = personnel.filter(
 			(p) =>
@@ -129,6 +151,7 @@ const PersonnelList = () => {
 
 	useEffect(() => {
 		getPersonnel();
+		getStatus();
 	}, []);
 
 	useEffect(() => {
@@ -197,6 +220,25 @@ const PersonnelList = () => {
 										value={`${personnelDetails?.qr_code}`}
 										disabled
 										className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+									/>
+								</div>
+								<div className="mb-4">
+									<label
+										htmlFor="name"
+										className="block text-gray-700 font-bold mb-2"
+									>
+										Status
+									</label>
+									<QRCADropdown
+										options={status}
+										label={'Status'}
+										placeholder={'Personnel Status'}
+										onChange={(option) =>
+											setUpdates({
+												...updates,
+												personnelStatus: option.value,
+											})
+										}
 									/>
 								</div>
 								<div className="mb-4">
@@ -420,6 +462,9 @@ const PersonnelList = () => {
 							First Name
 						</th>
 						<th scope="col" className="px-6 py-3">
+							Status
+						</th>
+						<th scope="col" className="px-6 py-3">
 							QR Code
 						</th>
 						<th scope="col" className="px-6 py-3">
@@ -434,6 +479,7 @@ const PersonnelList = () => {
 									<td className="px-6 py-4">{p.position}</td>
 									<td className="px-6 py-4">{p.last_name}</td>
 									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">{p.personnelStatus?.status}</td>
 									<td className="px-6 py-4">
 										<button
 											onClick={() => {
@@ -472,6 +518,7 @@ const PersonnelList = () => {
 									<td className="px-6 py-4">{p.position}</td>
 									<td className="px-6 py-4">{p.last_name}</td>
 									<td className="px-6 py-4">{p.first_name}</td>
+									<td className="px-6 py-4">{p.personnelStatus?.status}</td>
 									<td className="px-6 py-4">
 										<div className="flex gap-x-2">
 											<button

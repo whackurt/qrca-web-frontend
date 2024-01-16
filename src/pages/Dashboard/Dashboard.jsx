@@ -44,6 +44,8 @@ const Dashboard = () => {
 
 		setFilteredAttendance(filtered);
 
+		filterAttendance();
+
 		// console.log(onSch);
 	};
 
@@ -65,10 +67,7 @@ const Dashboard = () => {
 		}
 	};
 
-	useEffect(() => {
-		getAttendance();
-		getStatus();
-
+	const filterAttendance = () => {
 		//regular personnels
 		const regularAtt = filteredAttendance.filter(
 			(att) => !att.personnel?.personnelStatus
@@ -148,6 +147,13 @@ const Dashboard = () => {
 		);
 
 		setAwol(awolAttendance);
+	};
+
+	useEffect(() => {
+		getAttendance();
+		getStatus();
+
+		filterAttendance();
 	}, []);
 
 	useEffect(() => {
@@ -156,6 +162,8 @@ const Dashboard = () => {
 		);
 
 		setFilteredAttendance(filtered);
+
+		filterAttendance();
 	}, [selectedDate]);
 
 	return (

@@ -4,24 +4,47 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { GetAttendance } from '../../services/attendance';
 import moment from 'moment-timezone';
 import { format } from 'date-fns';
+import Button from '../../components/Button';
+import { GetStatus } from '../../services/status';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import AttendanceReportDoc from '../../components/AttendanceReportDoc';
 
 const Dashboard = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [attendance, setAttendance] = useState([]);
 	const [filteredAttendance, setFilteredAttendance] = useState([]);
+	const [status, setStatus] = useState([]);
+
+	const [regular, setRegular] = useState([]);
+	const [dto, setDto] = useState([]);
+	const [onSch, setOnSch] = useState([]);
+	const [newGradBisoc, setNewGradBisoc] = useState([]);
+	const [appRet, setAppRet] = useState([]);
+	const [rtu, setRtu] = useState([]);
+	const [underSusp, setUnderSusp] = useState([]);
+	const [awol, setAwol] = useState([]);
+
+	const formattedSelectedDate = `${selectedDate.getFullYear()}-${
+		selectedDate.getMonth() + 1 < 10
+			? '0' + (selectedDate.getMonth() + 1)
+			: selectedDate.getMonth() + 1
+	}-${selectedDate.getDate()}`;
 
 	const getAttendance = async () => {
 		const res = await GetAttendance();
 
-		setAttendance(res.data);
+		const attends = res.data;
 
-		setFilteredAttendance(
-			res.data.filter(
-				(attendance) =>
-					attendance.dateTime.substring(0, 10) ===
-					selectedDate.toISOString().substring(0, 10)
-			)
+		setAttendance(attends);
+
+		const filtered = res.data?.filter(
+			(attendance) =>
+				attendance.dateTime.substring(0, 10) === formattedSelectedDate
 		);
+
+		setFilteredAttendance(filtered);
+
+		// console.log(onSch);
 	};
 
 	const formatDate = (dateTime) => {
@@ -31,15 +54,105 @@ const Dashboard = () => {
 		return format(dt, 'MMMM d, yyyy');
 	};
 
+	const getStatus = async () => {
+		const res = await GetStatus();
+
+		if (res.status === 200) {
+			const statuses = res.data;
+			setStatus(statuses);
+
+			// console.log(status);
+		}
+	};
+
 	useEffect(() => {
 		getAttendance();
+		getStatus();
+
+		//regular personnels
+		const regularAtt = filteredAttendance.filter(
+			(att) => !att.personnel?.personnelStatus
+		);
+
+		setRegular(regularAtt);
+
+		//Deployed to other offices
+		const dtooStatus = status.filter(
+			(st) => st.status === 'Detailed to Other Offices'
+		);
+
+		const detailed = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === dtooStatus[0]._id
+		);
+
+		setDto(detailed);
+
+		//Newly graduated BISOC
+		const newGradStatus = status.filter(
+			(st) => st.status === 'Newly Graduated BISOC'
+		);
+
+		const newGrad = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === newGradStatus[0]._id
+		);
+
+		setNewGradBisoc(newGrad);
+
+		//onGoing Schooling
+		const onSchStatus = status.filter(
+			(st) => st.status === 'Ongoing Schooling'
+		);
+
+		const onSch = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === onSchStatus[0]._id
+		);
+
+		setOnSch(onSch);
+
+		//appllied for retirement
+		const retStatus = status.filter(
+			(st) => st.status === 'Applied for Optional Retirement'
+		);
+
+		const ret = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === retStatus[0]._id
+		);
+
+		setAppRet(ret);
+
+		// returned to unit
+		const retToUnit = status.filter(
+			(st) => st.status === 'Returned-to-Unit (RTU)'
+		);
+
+		const _rtu = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === retToUnit[0]._id
+		);
+
+		setRtu(_rtu);
+
+		// under Suspension
+		const usStatus = status.filter((st) => st.status === 'Under Suspension');
+
+		const underSuspension = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === usStatus[0]._id
+		);
+
+		setUnderSusp(underSuspension);
+
+		// AWOL
+		const awolStatus = status.filter((st) => st.status === 'On AWOL');
+
+		const awolAttendance = filteredAttendance.filter(
+			(att) => att.personnel?.personnelStatus === awolStatus[0]._id
+		);
+
+		setAwol(awolAttendance);
 	}, []);
 
 	useEffect(() => {
 		const filtered = attendance.filter(
-			(at) =>
-				at.dateTime.substring(0, 10) ===
-				selectedDate.toISOString().substring(0, 10)
+			(at) => at.dateTime.substring(0, 10) === formattedSelectedDate
 		);
 
 		setFilteredAttendance(filtered);
@@ -47,6 +160,30 @@ const Dashboard = () => {
 
 	return (
 		<div className="relative overflow-x-auto h-screen">
+			<div className="w-full flex justify-end my-4">
+				<PDFDownloadLink
+					document={
+						<AttendanceReportDoc
+							status={status}
+							attendances={filteredAttendance}
+							date={formatDate(selectedDate)}
+							regular={regular}
+							dto={dto}
+							newGradBisoc={newGradBisoc}
+							onSch={onSch}
+							appRet={appRet}
+							rtu={rtu}
+							underSusp={underSusp}
+							awol={awol}
+						/>
+					}
+				>
+					<Button onClick={() => {}} bgColor={'bg-green-500'}>
+						Generate Report
+					</Button>
+				</PDFDownloadLink>
+			</div>
+
 			<div className="flex justify-between">
 				<div className="flex ">
 					<h1 className=" text-2xl text-slate-600 uppercase">Attendance | </h1>
@@ -68,6 +205,7 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
+
 			<table className="w-full my-4 text-sm border  rounded-md text-left rtl:text-right text-gray-600">
 				<thead className="text-xs text-white uppercase bg-primary">
 					<tr>

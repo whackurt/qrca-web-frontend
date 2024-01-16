@@ -4,8 +4,8 @@ const Button = (props) => {
 	return (
 		<button
 			onClick={props.onClick}
-			className="bg-primary text-white font-[Poppins] py-1 px-3 rounded md:ml-8 hover:bg-secondary 
-    duration-500 text-sm"
+			className={`bg-primary ${props.bgColor} text-white font-[Poppins] py-1 px-3 rounded hover:bg-secondary 
+    duration-500 text-sm`}
 		>
 			{props.children}
 		</button>

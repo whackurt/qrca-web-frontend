@@ -150,10 +150,12 @@ const Dashboard = () => {
 	};
 
 	useEffect(() => {
+		filterAttendance();
+	}, [filteredAttendance]);
+
+	useEffect(() => {
 		getAttendance();
 		getStatus();
-
-		filterAttendance();
 	}, []);
 
 	useEffect(() => {
@@ -213,48 +215,49 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
-
-			<table className="w-full my-4 text-sm border  rounded-md text-left rtl:text-right text-gray-600">
-				<thead className="text-xs text-white uppercase bg-primary">
-					<tr>
-						<th scope="col" className="px-6 py-3">
-							Time
-						</th>
-						<th scope="col" className="px-6 py-3">
-							Date
-						</th>
-						<th scope="col" className="px-6 py-3">
-							QR Code
-						</th>
-						<th scope="col" className="px-6 py-3">
-							Position
-						</th>
-						<th scope="col" className="px-6 py-3">
-							Last Name
-						</th>
-						<th scope="col" className="px-6 py-3">
-							First Name
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{filteredAttendance.map((at) => (
-						<tr key={at._id} className="bg-white border-b">
-							<th
-								scope="row"
-								className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-							>
-								{moment.utc(at.dateTime).format('hh:mm A')}
+			<div className="overflow-x">
+				<table className="table-auto overflow-scroll w-full my-4 text-sm border  rounded-md text-left rtl:text-right text-gray-600">
+					<thead className="text-xs text-white uppercase bg-primary">
+						<tr>
+							<th scope="col" className="px-6 py-3">
+								Time
 							</th>
-							<td className="px-6 py-4">{formatDate(at.dateTime)}</td>
-							<td className="px-6 py-4">{at.qr_code}</td>
-							<td className="px-6 py-4">{at.personnel?.position}</td>
-							<td className="px-6 py-4">{at.personnel?.last_name}</td>
-							<td className="px-6 py-4">{at.personnel?.first_name}</td>
+							{/* <th scope="col" className="px-6 py-3">
+								Date
+							</th> */}
+							<th scope="col" className="px-6 py-3">
+								QR Code
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Position
+							</th>
+							<th scope="col" className="px-6 py-3">
+								Last Name
+							</th>
+							<th scope="col" className="px-6 py-3">
+								First Name
+							</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{filteredAttendance.map((at) => (
+							<tr key={at._id} className="bg-white border-b">
+								<th
+									scope="row"
+									className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+								>
+									{moment.utc(at.dateTime).format('hh:mm A')}
+								</th>
+								{/* <td className="px-6 py-4">{formatDate(at.dateTime)}</td> */}
+								<td className="px-6 py-4">{at.qr_code}</td>
+								<td className="px-6 py-4">{at.personnel?.position}</td>
+								<td className="px-6 py-4">{at.personnel?.last_name}</td>
+								<td className="px-6 py-4">{at.personnel?.first_name}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
 			{filteredAttendance.length === 0 ? (
 				<div className="flex justify-center py-4 pl-2">
 					No attendance data available

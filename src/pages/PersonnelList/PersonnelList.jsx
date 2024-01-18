@@ -438,18 +438,12 @@ const PersonnelList = () => {
 						onChange={(e) => setSearchValue(e.target.value)}
 						placeholder="Search personnel"
 					/>
-					<button
-						onClick={() => searchPersonnel()}
-						className="absolute px-2 bg-secondary hover:bg-primary py-2 rounded-lg"
-					>
-						<IoMdSearch color="#FFFFFF" />
-					</button>
 				</div>
 				<div>
 					<Button onClick={() => toggleAddModal()}>Add Personnel</Button>
 				</div>
 			</div>
-			<table className="w-full my-4 text-sm border  rounded-md text-left rtl:text-right text-gray-600">
+			<table className="overflow-y-auto w-full my-4 text-sm border rounded-md text-left rtl:text-right text-gray-600">
 				<thead className="text-xs text-white uppercase bg-primary">
 					<tr>
 						<th scope="col" className="px-6 py-3">

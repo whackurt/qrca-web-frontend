@@ -5,15 +5,17 @@ import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 // 	page: { backgroundColor: 'white' },
 // 	section: { color: 'black', textAlign: 'center', margin: 30 },
 // });
-const large = 10;
+const large = 11;
 const xlarge = 12;
 const medium = 8;
 
 const styles = StyleSheet.create({
-	page: { backgroundColor: '#FFFFFF' },
+	page: { backgroundColor: '#FFFFFF', padding: 20 },
+
 	textRegular: { fontFamily: 'Helvetica', fontSize: medium },
 
 	headerRegular: { fontFamily: 'Helvetica', fontSize: large },
+
 	headerBold: { fontFamily: 'Helvetica-Bold', fontSize: large },
 
 	docTitleRed: {
@@ -27,9 +29,10 @@ const styles = StyleSheet.create({
 		color: '#1c1c1c',
 	},
 
-	section: { color: 'black', textAlign: 'center', margin: 8 },
+	section: { color: 'black', textAlign: 'center', margin: 10 },
 
 	attendance: { color: 'black', textAlign: 'left', flexDirection: 'row' },
+
 	attendanceContent: {
 		fontFamily: 'Helvetica',
 		fontSize: large,
@@ -43,6 +46,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		paddingVertical: 2,
 	},
+
 	statusSectionWrapper: {
 		textAlign: 'center',
 		paddingHorizontal: 20,
@@ -54,6 +58,26 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 		fontSize: large,
 		color: '#1c1c1c',
+	},
+
+	certificationWrapper: {
+		textAlign: 'left',
+		paddingHorizontal: 110,
+		// margin: 6,
+		marginTop: 10,
+	},
+
+	certificationText: {
+		fontFamily: 'Helvetica',
+		fontSize: 10,
+	},
+
+	rowContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: 115,
+		marginBottom: 15,
+		marginTop: 10,
 	},
 });
 
@@ -229,6 +253,32 @@ const AttendanceReportDoc = ({
 							</View>
 						</>
 					))}
+				</View>
+
+				<View style={styles.section}>
+					<Text style={styles.headerBold}>RECAPITULATION</Text>
+					<Text style={styles.headerRegular}>CERTIFICATION</Text>
+				</View>
+
+				<View style={styles.certificationWrapper}>
+					<Text style={styles.certificationText}>
+						THIS IS TO CERTIFY that the entries and signatures as appearing in
+						this DPPAR are true and authentic based on my personal knowledge. As
+						such, I hereby bind myself criminally and administratively liable in
+						case of falsehood and/or forgery.
+					</Text>
+				</View>
+
+				<View style={styles.rowContainer}>
+					<Text style={styles.certificationText}>Prepared by:</Text>
+					<Text style={styles.certificationText}>Certified Correct by:</Text>
+					<Text style={styles.certificationText}>Noted by:</Text>
+				</View>
+
+				<View style={styles.rowContainer}>
+					<Text style={styles.certificationText}>RPHAS Action PNCO</Text>
+					<Text style={styles.certificationText}>C. RPHAS</Text>
+					<Text style={styles.certificationText}>C. RPRMD</Text>
 				</View>
 			</Page>
 		</Document>

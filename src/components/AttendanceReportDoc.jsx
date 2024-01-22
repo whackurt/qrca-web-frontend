@@ -142,11 +142,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{dto.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -159,11 +158,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{onSch.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -176,11 +174,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{newGradBisoc.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -193,11 +190,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{appRet.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -210,11 +206,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{rtu.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -227,11 +222,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{underSusp.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>
@@ -244,11 +238,10 @@ const AttendanceReportDoc = ({
 					</View>
 					{awol.map((attendance, i) => (
 						<>
-							<View style={styles.attendance}>
+							<View key={i} style={styles.attendance}>
 								<Text style={styles.attendanceContent}>{i + 1}</Text>
 								<Text style={styles.attendanceContent}>
-									{attendance.personnel?.last_name},{' '}
-									{attendance.personnel?.first_name}
+									{attendance?.last_name}, {attendance?.first_name}
 								</Text>
 							</View>
 						</>

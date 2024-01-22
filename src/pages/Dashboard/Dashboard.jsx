@@ -8,12 +8,15 @@ import Button from '../../components/Button';
 import { GetStatus } from '../../services/status';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import AttendanceReportDoc from '../../components/AttendanceReportDoc';
+import { GetPersonnel } from '../../services/personnel';
 
 const Dashboard = () => {
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [attendance, setAttendance] = useState([]);
 	const [filteredAttendance, setFilteredAttendance] = useState([]);
 	const [status, setStatus] = useState([]);
+
+	const [personnels, setPersonnels] = useState([]);
 
 	const [regular, setRegular] = useState([]);
 	const [dto, setDto] = useState([]);
@@ -45,8 +48,6 @@ const Dashboard = () => {
 		setFilteredAttendance(filtered);
 
 		filterAttendance();
-
-		// console.log(onSch);
 	};
 
 	const formatDate = (dateTime) => {
@@ -62,15 +63,27 @@ const Dashboard = () => {
 		if (res.status === 200) {
 			const statuses = res.data;
 			setStatus(statuses);
-
-			// console.log(status);
 		}
 	};
 
+	const getPersonnels = async () => {
+		const res = await GetPersonnel();
+
+		const personnelList = res.data;
+
+		setPersonnels(personnelList);
+	};
+
+	useEffect(() => {
+		getPersonnels();
+	}, []);
+
 	const filterAttendance = () => {
 		//regular personnels
+		const onStation = status.filter((st) => st.status === 'On Station');
+
 		const regularAtt = filteredAttendance.filter(
-			(att) => !att.personnel?.personnelStatus
+			(att) => att.personnel?.personnelStatus === onStation[0]._id
 		);
 
 		setRegular(regularAtt);
@@ -80,8 +93,8 @@ const Dashboard = () => {
 			(st) => st.status === 'Detailed to Other Offices'
 		);
 
-		const detailed = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === dtooStatus[0]._id
+		const detailed = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === dtooStatus[0]._id
 		);
 
 		setDto(detailed);
@@ -91,8 +104,8 @@ const Dashboard = () => {
 			(st) => st.status === 'Newly Graduated BISOC'
 		);
 
-		const newGrad = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === newGradStatus[0]._id
+		const newGrad = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === newGradStatus[0]._id
 		);
 
 		setNewGradBisoc(newGrad);
@@ -102,8 +115,8 @@ const Dashboard = () => {
 			(st) => st.status === 'Ongoing Schooling'
 		);
 
-		const onSch = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === onSchStatus[0]._id
+		const onSch = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === onSchStatus[0]._id
 		);
 
 		setOnSch(onSch);
@@ -113,8 +126,8 @@ const Dashboard = () => {
 			(st) => st.status === 'Applied for Optional Retirement'
 		);
 
-		const ret = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === retStatus[0]._id
+		const ret = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === retStatus[0]._id
 		);
 
 		setAppRet(ret);
@@ -124,8 +137,8 @@ const Dashboard = () => {
 			(st) => st.status === 'Returned-to-Unit (RTU)'
 		);
 
-		const _rtu = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === retToUnit[0]._id
+		const _rtu = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === retToUnit[0]._id
 		);
 
 		setRtu(_rtu);
@@ -133,8 +146,8 @@ const Dashboard = () => {
 		// under Suspension
 		const usStatus = status.filter((st) => st.status === 'Under Suspension');
 
-		const underSuspension = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === usStatus[0]._id
+		const underSuspension = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === usStatus[0]._id
 		);
 
 		setUnderSusp(underSuspension);
@@ -142,8 +155,8 @@ const Dashboard = () => {
 		// AWOL
 		const awolStatus = status.filter((st) => st.status === 'On AWOL');
 
-		const awolAttendance = filteredAttendance.filter(
-			(att) => att.personnel?.personnelStatus === awolStatus[0]._id
+		const awolAttendance = personnels?.filter(
+			(personnel) => personnel.personnelStatus?._id === awolStatus[0]._id
 		);
 
 		setAwol(awolAttendance);

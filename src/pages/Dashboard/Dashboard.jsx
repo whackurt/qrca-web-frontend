@@ -16,6 +16,8 @@ const Dashboard = () => {
 	const [filteredAttendance, setFilteredAttendance] = useState([]);
 	const [status, setStatus] = useState([]);
 
+	const [loading, setLoading] = useState(false);
+
 	const [personnels, setPersonnels] = useState([]);
 
 	const [regular, setRegular] = useState([]);
@@ -34,6 +36,8 @@ const Dashboard = () => {
 	}-${selectedDate.getDate()}`;
 
 	const getAttendance = async () => {
+		setLoading(true);
+
 		const res = await GetAttendance();
 
 		const attends = res.data;
@@ -48,6 +52,8 @@ const Dashboard = () => {
 		setFilteredAttendance(filtered);
 
 		filterAttendance();
+
+		setLoading(false);
 	};
 
 	const formatDate = (dateTime) => {
@@ -253,7 +259,7 @@ const Dashboard = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{filteredAttendance.map((at) => (
+						{filteredAttendance?.map((at) => (
 							<tr key={at._id} className="bg-white border-b">
 								<th
 									scope="row"
@@ -271,11 +277,15 @@ const Dashboard = () => {
 					</tbody>
 				</table>
 			</div>
-			{filteredAttendance.length === 0 ? (
+			{filteredAttendance.length === 0 && !loading ? (
 				<div className="flex justify-center py-4 pl-2">
 					No attendance data available
 				</div>
 			) : null}
+
+			{loading && (
+				<div className="flex justify-center py-4 pl-2">Loading...</div>
+			)}
 		</div>
 	);
 };

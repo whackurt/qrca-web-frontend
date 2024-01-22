@@ -100,9 +100,15 @@ const PersonnelList = () => {
 	};
 
 	const getPersonnel = async () => {
+		setLoading(true);
 		const res = await GetPersonnel();
-		setPersonnel(res.data);
-		setFilteredPersonnel(res.data);
+
+		const personnels = res.data;
+		setPersonnel(personnels);
+
+		setFilteredPersonnel(personnels);
+
+		setLoading(false);
 	};
 
 	const getStatus = async () => {
@@ -552,11 +558,15 @@ const PersonnelList = () => {
 						  ))}
 				</tbody>
 			</table>
-			{personnel.length === 0 ? (
+			{personnel.length === 0 && !loading ? (
 				<div className="flex justify-center py-4 pl-2">
 					No personnel data available
 				</div>
 			) : null}
+
+			{loading && (
+				<div className="flex justify-center py-4 pl-2">Loading...</div>
+			)}
 		</div>
 	);
 };

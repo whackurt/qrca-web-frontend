@@ -111,7 +111,7 @@ const PersonnelList = () => {
 		if (res.status === 200) {
 			const statuses = res.data;
 
-			var restructured = statuses.map((status) => {
+			const restructured = statuses.map((status) => {
 				return {
 					label: status.status,
 					value: status._id,
@@ -127,6 +127,10 @@ const PersonnelList = () => {
 			(p) =>
 				p.last_name.toLowerCase().includes(searchValue.toLowerCase()) ||
 				p.first_name.toLowerCase().includes(searchValue.toLowerCase()) ||
+				p.position.toLowerCase().includes(searchValue.toLowerCase()) ||
+				p.personnelStatus?.status
+					.toLowerCase()
+					.includes(searchValue.toLowerCase()) ||
 				p.qr_code.toLowerCase().includes(searchValue.toLowerCase())
 		);
 
